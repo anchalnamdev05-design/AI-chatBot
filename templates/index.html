@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediCaps University – Smart Enquiry Portal</title>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 1 · LANDING
+══════════════════════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+
+  <!-- Top navigation bar -->
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">
+        <img src="logo.png" alt="Logo" width="40">
+      </div>
+      <div>
+        <div class="brand-name">MediCaps University</div>
+        <div class="brand-tag">INDORE · SINCE 1999</div>
+      </div>
+    </div>
+    <div class="topbar-nav">
+      <button class="nav-link" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">About</button>
+      <button class="nav-link" onclick="document.getElementById('courses-sec').scrollIntoView({behavior:'smooth'})">Courses</button>
+      <button class="nav-link" onclick="document.getElementById('contact-sec').scrollIntoView({behavior:'smooth'})">Contact</button>
+      <button class="btn-outline-gold" onclick="goTo('login')" style="margin-left:8px">Login</button>
+      <button class="btn-gold" onclick="goTo('register')">Register</button>
+    </div>
+  </nav>
+
+  <!-- Hero section -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+
+      <!-- Left column – headline & CTAs -->
+      <div>
+        <div class="hero-badge">
+          <span></span> AI-Powered Enquiry System · Live Now
+        </div>
+        <h1>Your Gateway to <em>Smart</em> College Enquiries</h1>
+        <p class="hero-desc">
+          Get instant, accurate answers to all your questions about admissions, courses, fees,
+          placements, and campus life — powered by AI, available 24/7.
+        </p>
+        <div class="hero-cta">
+          <button class="btn-hero-primary" onclick="goTo('register')">Start Chatting Free →</button>
+          <button class="btn-hero-sec"     onclick="goTo('login')">Student Login</button>
+        </div>
+      </div>
+
+      <!-- Right column – chatbot preview card -->
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <div class="bot-a`v">🤖</div>
+          <div>
+            <div class="bot-name">MediCaps AI Assistant</div>
+            <div class="bot-status"><span class="bot-dot"></span> Online · Instant replies</div>
+          </div>
+        </div>
+        <div class="preview-msgs">
+          <div class="pm bot">Hello! 👋 I'm your MediCaps AI guide. Ask me about admissions, courses, fees, or anything else!</div>
+          <div class="pm user">What's the fee for B.Tech CSE?</div>
+          <div class="pm bot">The B.Tech CSE annual fee is ₹1,10,000. Hostel is ₹60,000/year. Scholarships available for merit students scoring 90%+! 🎓</div>
+        </div>
+        <div class="preview-input">💬 Ask anything about MediCaps…</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">Students Enrolled</div></div>
+      <div class="stat-item"><div class="stat-num">40+</div><div class="stat-label">Programs Offered</div></div>
+      <div class="stat-item"><div class="stat-num">90%</div><div class="stat-label">Placement Rate</div></div>
+      <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">AI Support</div></div>
+    </div>
+  </div>
+
+  <!-- About / Features -->
+  <section class="section" id="about" style="background:var(--white)">
+    <div class="section-inner">
+      <div class="section-tag">Why MediCaps AI?</div>
+      <h2 class="section-title">Everything You Need to Know, Instantly</h2>
+      <p class="section-sub">Our AI chatbot handles hundreds of student queries every day, giving you accurate, up-to-date information without waiting in queues.</p>
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <div class="feat-title">Instant Responses</div>
+          <div class="feat-desc">Get answers in seconds, not hours. Our AI processes your query and responds immediately with relevant college information.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🧠</div>
+          <div class="feat-title">Intelligent Understanding</div>
+          <div class="feat-desc">Ask in plain natural language. The AI understands context and follow-up questions just like talking to a real person.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🔒</div>
+          <div class="feat-title">Secure &amp; Private</div>
+          <div class="feat-desc">Your chat history is private and secure. Only you and the admin can access your conversation data.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📱</div>
+          <div class="feat-title">Works Everywhere</div>
+          <div class="feat-desc">Fully responsive on mobile, tablet, and desktop. Access from any device, anywhere, anytime.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">📊</div>
+          <div class="feat-title">Always Up-to-Date</div>
+          <div class="feat-desc">College info, fee structures, and schedules are regularly updated by admins so you always get the latest data.</div>
+        </div>
+        <div class="feat-card">
+          <div class="feat-icon">🎯</div>
+          <div class="feat-title">Guided Conversations</div>
+          <div class="feat-desc">Not sure what to ask? Quick-suggestion buttons help you navigate to the exact information you need.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section" id="how">
+    <div class="section-inner">
+      <div class="section-tag">Simple Process</div>
+      <h2 class="section-title">Get Started in 3 Steps</h2>
+      <p class="section-sub">Join thousands of students already using the MediCaps AI chatbot for instant college guidance.</p>
+      <div class="how-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <div class="step-title">Create Your Account</div>
+          <div class="step-desc">Register with your name, email, and a password. It takes less than a minute to set up your student profile.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <div class="step-title">Log In Securely</div>
+          <div class="step-desc">Sign in using your registered email and password to access your personal chatbot dashboard.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <div class="step-title">Chat &amp; Get Answers</div>
+          <div class="step-desc">Ask anything about MediCaps — admissions, courses, fees, hostels, placements — and get instant AI-powered answers.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Courses -->
+  <section class="section" id="courses-sec" style="background:var(--white)">
+    <div class="section-inner">
+      <div class="section-tag">Academic Programs</div>
+      <h2 class="section-title">Explore Our Courses</h2>
+      <p class="section-sub">MediCaps offers a wide range of undergraduate and postgraduate programs across engineering, management, and sciences.</p>
+      <div class="courses-grid">
+        <div class="course-item"><div class="course-icon">💻</div><div><div class="course-name">B.Tech Computer Science &amp; Engineering</div><div class="course-info">4 Years · 120 Seats</div></div><div class="course-badge">UG</div></div>
+        <div class="course-item"><div class="course-icon">📡</div><div><div class="course-name">B.Tech Electronics &amp; Communication</div><div class="course-info">4 Years · 60 Seats</div></div><div class="course-badge">UG</div></div>
+        <div class="course-item"><div class="course-icon">⚙️</div><div><div class="course-name">B.Tech Mechanical Engineering</div><div class="course-info">4 Years · 60 Seats</div></div><div class="course-badge">UG</div></div>
+        <div class="course-item"><div class="course-icon">🏗️</div><div><div class="course-name">B.Tech Civil Engineering</div><div class="course-info">4 Years · 60 Seats</div></div><div class="course-badge">UG</div></div>
+        <div class="course-item"><div class="course-icon">📊</div><div><div class="course-name">MBA – Business Administration</div><div class="course-info">2 Years · 120 Seats</div></div><div class="course-badge">PG</div></div>
+        <div class="course-item"><div class="course-icon">🔬</div><div><div class="course-name">M.Tech Computer Science</div><div class="course-info">2 Years · 30 Seats</div></div><div class="course-badge">PG</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact-sec">
+    <div style="position:relative;z-index:1">
+      <h2>Ready to Get Instant Answers?</h2>
+      <p>Join 5000+ students already using the MediCaps AI chatbot for instant guidance.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-hero-primary" onclick="goTo('register')">Create Free Account →</button>
+        <button class="btn-hero-sec"     onclick="goTo('login')">Already a Student? Login</button>
+      </div>
+      <div style="margin-top:32px;font-size:13.5px;color:rgba(255,255,255,0.5)">
+        📍 MediCaps University, AB Road, Pigdamber, Rau, Indore – 453331
+        &nbsp;|&nbsp; 📞 +91-731-4259500
+        &nbsp;|&nbsp; ✉️ info@medicapsuniversity.ac.in
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    © 2024 MediCaps University, Indore. AI Enquiry Portal. All rights reserved.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 2 · LOGIN
+══════════════════════════════════════════════════════════ -->
+<div id="page-login" class="page">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">🎓</div>
+      <div>
+        <div class="brand-name">MediCaps University</div>
+        <div class="brand-tag">STUDENT PORTAL</div>
+      </div>
+    </div>
+    <div class="topbar-nav">
+      <button class="nav-link" onclick="goTo('landing')">← Back to Home</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🎓</div>
+        <div class="auth-logo-text">MediCaps University</div>
+        <div class="auth-logo-sub">Student Login Portal</div>
+      </div>
+
+      <div id="login-alert" class="alert-box"></div>
+
+      <div class="auth-title">Welcome Back</div>
+      <div class="auth-sub">Sign in to access the AI chatbot</div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email" />
+        <div class="form-error" id="err-login-email">Please enter a valid email.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password"
+               onkeydown="if(event.key==='Enter') doLogin()" />
+        <div class="form-error" id="err-login-pass">Password is required.</div>
+      </div>
+
+      <button class="btn-primary-full" id="login-btn" onclick="doLogin()">Sign In to Chat</button>
+
+      <div class="auth-switch">
+        Don't have an account? <a onclick="goTo('register')">Register here</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 3 · REGISTER
+══════════════════════════════════════════════════════════ -->
+<div id="page-register" class="page">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">🎓</div>
+      <div>
+        <div class="brand-name">MediCaps University</div>
+        <div class="brand-tag">STUDENT PORTAL</div>
+      </div>
+    </div>
+    <div class="topbar-nav">
+      <button class="nav-link" onclick="goTo('landing')">← Back to Home</button>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🎓</div>
+        <div class="auth-logo-text">MediCaps University</div>
+        <div class="auth-logo-sub">Create Student Account</div>
+      </div>
+
+      <div id="reg-alert" class="alert-box"></div>
+
+      <div class="auth-title">Create Account</div>
+      <div class="auth-sub">Register to access the AI chatbot instantly</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input class="form-input" type="text" id="reg-fname" placeholder="First name" />
+          <div class="form-error" id="err-fname">Required.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input class="form-input" type="text" id="reg-lname" placeholder="Last name" />
+          <div class="form-error" id="err-lname">Required.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="your@email.com" autocomplete="email" />
+        <div class="form-error" id="err-email">Enter a valid email.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Course / Branch</label>
+        <select class="form-input" id="reg-course">
+          <option value="">Select your course</option>
+          <option>B.Tech – Computer Science &amp; Engineering</option>
+          <option>B.Tech – Information Technology</option>
+          <option>B.Tech – Electronics &amp; Communication</option>
+          <option>B.Tech – Mechanical Engineering</option>
+          <option>B.Tech – Civil Engineering</option>
+          <option>MBA – Business Administration</option>
+          <option>M.Tech – Computer Science</option>
+          <option>Prospective / Enquiry Student</option>
+        </select>
+        <div class="form-error" id="err-course">Please select a course.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="reg-pass" placeholder="Min 6 characters" autocomplete="new-password" />
+        <div class="form-error" id="err-pass">Password must be at least 6 characters.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input class="form-input" type="password" id="reg-cpass" placeholder="Confirm your password" />
+        <div class="form-error" id="err-cpass">Passwords do not match.</div>
+      </div>
+
+      <button class="btn-primary-full" id="reg-btn" onclick="doRegister()">Create Account &amp; Chat</button>
+
+      <div class="auth-switch">
+        Already registered? <a onclick="goTo('login')">Sign in here</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 4 · STUDENT CHAT
+══════════════════════════════════════════════════════════ -->
+<div id="page-chat" class="page">
+
+  <!-- Left sidebar -->
+  <aside class="chat-sidebar">
+    <div class="chat-sidebar-head">
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-icon">🎓</div>
+        <div class="sidebar-brand-name">MediCaps AI</div>
+      </div>
+      <div class="sidebar-user-info">
+        <div class="user-av" id="student-av">S</div>
+        <div>
+          <div class="user-name"   id="student-name">Student</div>
+          <div class="user-role"   id="student-course">B.Tech CSE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-topics">
+      <div class="topic-section-label">Quick Topics</div>
+      <button class="topic-btn active" onclick="sendQuick('What is the admission process at MediCaps University?')"><div class="topic-icon">📋</div> Admissions</button>
+      <button class="topic-btn"        onclick="sendQuick('What is the complete fee structure for all courses?')"><div class="topic-icon">💰</div> Fee Structure</button>
+      <button class="topic-btn"        onclick="sendQuick('What courses and programs are offered at MediCaps?')"><div class="topic-icon">📚</div> Courses &amp; Programs</button>
+      <button class="topic-btn"        onclick="sendQuick('Tell me about faculty and professors at MediCaps University')"><div class="topic-icon">👨‍🏫</div> Faculty Details</button>
+      <button class="topic-btn"        onclick="sendQuick('What is the placement record and which companies visit for recruitment?')"><div class="topic-icon">💼</div> Placements</button>
+      <button class="topic-btn"        onclick="sendQuick('What scholarships are available for students?')"><div class="topic-icon">🏆</div> Scholarships</button>
+      <button class="topic-btn"        onclick="sendQuick('What campus facilities and hostel are available?')"><div class="topic-icon">🏛️</div> Campus &amp; Hostel</button>
+      <button class="topic-btn"        onclick="sendQuick('What are the upcoming events and exam timetable?')"><div class="topic-icon">📅</div> Events &amp; Timetable</button>
+      <button class="topic-btn"        onclick="sendQuick('How can I contact the college or admission office?')"><div class="topic-icon">📞</div> Contact Info</button>
+
+      <div class="topic-section-label" style="margin-top:20px">Actions</div>
+      <button class="topic-btn" onclick="clearChat()"><div class="topic-icon">🔄</div> New Conversation</button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main chat area -->
+  <div class="chat-main">
+
+    <!-- Chat topbar -->
+    <div class="chat-topbar">
+      <div class="chat-topbar-left">
+        <div class="bot-avatar">🤖</div>
+        <div>
+          <div class="chat-bot-name">MediCaps AI Assistant</div>
+          <div class="chat-bot-status"><span class="online-dot"></span> Online · Powered by Claude AI</div>
+        </div>
+      </div>
+      <div class="chat-topbar-right">
+        <button class="icon-btn" title="Clear chat" onclick="clearChat()">🔄</button>
+        <button class="icon-btn" title="Logout"     onclick="doLogout()">🚪</button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages-area" id="messages-area">
+      <div class="welcome-card" id="welcome-card">
+        <div class="wc-icon">🤖</div>
+        <h3>Hello! I'm Your MediCaps AI Guide</h3>
+        <p>Ask me anything about MediCaps University — admissions, courses, fees, placements, hostel, faculty, events, and more. I'm here 24/7 to help you.</p>
+        <div class="quick-questions">
+          <button class="qq-btn" onclick="sendQuick('How to apply for admission?')">How to apply?</button>
+          <button class="qq-btn" onclick="sendQuick('What is the B.Tech CSE fee?')">B.Tech fees</button>
+          <button class="qq-btn" onclick="sendQuick('What companies come for placement?')">Placements</button>
+          <button class="qq-btn" onclick="sendQuick('Is hostel available?')">Hostel</button>
+          <button class="qq-btn" onclick="sendQuick('What scholarships are available?')">Scholarships</button>
+          <button class="qq-btn" onclick="sendQuick('Tell me about the campus facilities')">Campus</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input bar -->
+    <div class="chat-input-area">
+      <div class="chat-input-box">
+        <textarea
+          class="chat-textarea"
+          id="chat-input"
+          placeholder="Ask me anything about MediCaps University…"
+          rows="1"
+          onkeydown="chatKeydown(event)"
+          oninput="chatResize(this)"
+          maxlength="500"
+        ></textarea>
+        <button class="send-btn" onclick="sendChat()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="input-footer-bar">
+        <span class="input-hint">Enter to send · Shift+Enter for new line</span>
+        <span class="input-hint" id="chat-char">0/500</span>
+      </div>
+    </div>
+
+  </div><!-- /chat-main -->
+</div><!-- /page-chat -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 5 · ADMIN LOGIN  (access via ?admin or Ctrl+Shift+A)
+══════════════════════════════════════════════════════════ -->
+<div id="page-admin-login" class="page">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">⚙️</div>
+      <div>
+        <div class="brand-name">MediCaps University</div>
+        <div class="brand-tag">ADMIN SECURE PORTAL</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="auth-wrap" style="background:var(--navy2)">
+    <div class="auth-card" style="border-top:3px solid var(--gold)">
+      <div class="auth-logo">
+        <div class="auth-logo-icon" style="background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-size:22px">⚙️</div>
+        <div class="auth-logo-text">Administrator Login</div>
+        <div class="auth-logo-sub" style="color:var(--danger);font-weight:500">Restricted Area · Authorized Personnel Only</div>
+      </div>
+
+      <div id="admin-login-alert" class="alert-box"></div>
+
+      <div class="form-group">
+        <label class="form-label">Admin Username</label>
+        <input class="form-input" type="text" id="admin-username" placeholder="admin" autocomplete="off" />
+        <div class="form-error" id="err-admin-u">Username required.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Admin Password</label>
+        <input class="form-input" type="password" id="admin-password" placeholder="Enter admin password" autocomplete="off"
+               onkeydown="if(event.key==='Enter') doAdminLogin()" />
+        <div class="form-error" id="err-admin-p">Password required.</div>
+      </div>
+
+      <button
+        class="btn-primary-full"
+        style="background:var(--navy2);border:2px solid var(--gold);margin-top:4px"
+        onclick="doAdminLogin()">
+        Access Admin Dashboard
+      </button>
+
+      <div class="auth-switch">
+        <a onclick="goTo('landing')" style="color:var(--text3)">← Return to public site</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE 6 · ADMIN DASHBOARD
+══════════════════════════════════════════════════════════ -->
+<div id="page-admin" class="page">
+
+  <!-- Admin sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-head">
+      <div class="admin-brand">
+        <div class="admin-brand-icon">⚙️</div>
+        <div class="admin-brand-name">Admin Panel</div>
+      </div>
+      <div class="admin-badge">ADMINISTRATOR</div>
+    </div>
+
+    <nav class="admin-nav">
+      <button class="admin-nav-item active" id="nav-overview"  onclick="adminTab('overview')"><span>📊</span> Dashboard Overview</button>
+      <button class="admin-nav-item"        id="nav-faqs"      onclick="adminTab('faqs')"><span>💬</span> Manage FAQs</button>
+      <button class="admin-nav-item"        id="nav-history"   onclick="adminTab('history')"><span>🗂️</span> Chat History</button>
+      <button class="admin-nav-item"        id="nav-students"  onclick="adminTab('students')"><span>👥</span> Student Accounts</button>
+      <button class="admin-nav-item"        id="nav-info"      onclick="adminTab('info')"><span>🏫</span> College Info</button>
+    </nav>
+
+    <div class="admin-sidebar-foot">
+      <button class="logout-btn" onclick="adminLogout()">🚪 Admin Logout</button>
+    </div>
+  </aside>
+
+  <!-- Admin main content -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-topbar-title" id="admin-page-title">Dashboard Overview</div>
+        <div class="admin-topbar-sub"   id="admin-page-sub">Welcome back, Administrator</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="badge badge-gold" style="font-size:12px;padding:5px 12px">⚙️ Admin · MediCaps</div>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ── OVERVIEW PANEL ── -->
+      <div class="admin-panel active" id="panel-overview">
+        <div class="stat-cards" id="stat-cards-area">
+          <!-- Populated by JS: renderOverview() -->
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="admin-table-wrap">
+            <div class="admin-table-head"><h4>Recent Student Registrations</h4></div>
+            <div id="recent-students-list"></div>
+          </div>
+          <div class="admin-table-wrap">
+            <div class="admin-table-head"><h4>Recent Chat Activity</h4></div>
+            <div id="recent-chats-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FAQS PANEL ── -->
+      <div class="admin-panel" id="panel-faqs">
+        <div class="faq-editor">
+          <h4 id="faq-form-title">➕ Add New FAQ / Response</h4>
+          <input type="hidden" id="editing-faq-id" />
+
+          <div class="form-row-admin">
+            <div class="form-label-admin">Category</div>
+            <select class="form-input-admin" id="faq-cat">
+              <option>Admissions</option>
+              <option>Fee Structure</option>
+              <option>Courses</option>
+              <option>Placements</option>
+              <option>Faculty</option>
+              <option>Hostel &amp; Campus</option>
+              <option>Scholarships</option>
+              <option>Timetable &amp; Events</option>
+              <option>Contact</option>
+              <option>General</option>
+            </select>
+          </div>
+
+          <div class="form-row-admin">
+            <div class="form-label-admin">Question / Keyword</div>
+            <input class="form-input-admin" type="text" id="faq-q" placeholder="e.g. What is the B.Tech fee?" />
+          </div>
+
+          <div class="form-row-admin">
+            <div class="form-label-admin">Answer</div>
+            <textarea class="form-textarea-admin" id="faq-a" placeholder="Enter the detailed answer…"></textarea>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <button class="btn-add" onclick="saveFAQ()">💾 Save FAQ</button>
+            <button class="btn-add"
+              style="background:var(--off);color:var(--text2);border:1px solid var(--border2)"
+              onclick="cancelEditFAQ()">Cancel</button>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="admin-table-head">
+            <h4>All FAQs (<span id="faq-count">0</span>)</h4>
+            <input class="table-search" placeholder="🔍 Search FAQs…" oninput="renderFAQTable(this.value)" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Category</th>
+                <th>Question</th>
+                <th>Answer Preview</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="faq-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── CHAT HISTORY PANEL ── -->
+      <div class="admin-panel" id="panel-history">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h4 style="font-size:15px;font-weight:600;color:var(--navy)">All Student Chat Sessions</h4>
+          <input class="table-search" placeholder="🔍 Filter by student…" oninput="renderHistoryList(this.value)" />
+        </div>
+        <div id="chat-history-list">
+          <!-- Populated by JS: renderHistoryList() -->
+        </div>
+      </div>
+
+      <!-- ── STUDENTS PANEL ── -->
+      <div class="admin-panel" id="panel-students">
+        <div class="admin-table-wrap">
+          <div class="admin-table-head">
+            <h4>Registered Students (<span id="student-count">0</span>)</h4>
+            <input class="table-search" placeholder="🔍 Search students…" oninput="renderStudentTable(this.value)" />
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Course</th>
+                <th>Registered</th>
+                <th>Chats</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="student-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── COLLEGE INFO PANEL ── -->
+      <div class="admin-panel" id="panel-info">
+        <div class="faq-editor">
+          <h4>🏫 Update College Information</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div>
+              <div class="form-label-admin" style="margin-bottom:6px">College Name</div>
+              <input class="form-input-admin" type="text" id="ci-name" placeholder="MediCaps University" />
+            </div>
+            <div>
+              <div class="form-label-admin" style="margin-bottom:6px">Phone</div>
+              <input class="form-input-admin" type="text" id="ci-phone" placeholder="+91-731-4259500" />
+            </div>
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="form-label-admin" style="margin-bottom:6px">Address</div>
+            <input class="form-input-admin" type="text" id="ci-address" placeholder="AB Road, Pigdamber, Rau, Indore – 453331" />
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="form-label-admin" style="margin-bottom:6px">Email</div>
+            <input class="form-input-admin" type="text" id="ci-email" placeholder="info@medicapsuniversity.ac.in" />
+          </div>
+          <div style="margin-bottom:16px">
+            <div class="form-label-admin" style="margin-bottom:6px">Admission Notice / Announcement</div>
+            <textarea class="form-textarea-admin" id="ci-notice" placeholder="Enter latest announcement for students…"></textarea>
+          </div>
+          <button class="btn-add" onclick="saveCollegeInfo()">💾 Save College Info</button>
+        </div>
+
+        <div class="admin-table-wrap" style="margin-top:20px">
+          <div class="admin-table-head"><h4>Current College Info</h4></div>
+          <div id="college-info-display" style="padding:16px 20px;font-size:13.5px;color:var(--text2);line-height:1.8"></div>
+        </div>
+      </div>
+
+    </div><!-- /admin-content -->
+  </div><!-- /admin-main -->
+</div><!-- /page-admin -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SHARED: CHAT HISTORY MODAL
+══════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="chat-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modal-title">Chat History</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     SHARED: TOAST NOTIFICATION
+══════════════════════════════════════════════════════════ -->
+<div class="toast" id="toast" style="display:none"></div>
+
+
+<!-- External JavaScript (loaded last so the DOM is ready) -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
