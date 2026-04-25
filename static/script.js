@@ -1,22 +1,4 @@
-/**
- * MediCaps University – Smart Enquiry Portal
- * script.js — All application logic
- *
- * Sections:
- *  1. Data Layer     (localStorage abstraction)
- *  2. Session        (login state management)
- *  3. Router         (page navigation)
- *  4. Validation     (form helpers)
- *  5. Toast          (notification utility)
- *  6. Auth           (register / login / logout)
- *  7. Chat           (AI-powered conversation)
- *  8. Admin          (dashboard, FAQs, history, students, college info)
- *  9. Init           (app bootstrap)
- */
-
-/* ═══════════════════════════════════════════════════════════
-   1. DATA LAYER  (localStorage-based persistence)
-═══════════════════════════════════════════════════════════ */
+/* 1. DATA LAYER */
 
 const DB = {
   /** Generic getter – returns parsed value or null */
@@ -33,19 +15,19 @@ const DB = {
     localStorage.setItem(key, JSON.stringify(value));
   },
 
-  /* ── Students ── */
+  /* Students  */
   getStudents() { return this.get('mc_students') || []; },
   saveStudents(students) { this.set('mc_students', students); },
 
-  /* ── FAQs ── */
+  /* FAQs */
   getFAQs() { return this.get('mc_faqs') || getDefaultFAQs(); },
   saveFAQs(faqs) { this.set('mc_faqs', faqs); },
 
-  /* ── Chat sessions ── */
+  /* Chat sessions */
   getChats() { return this.get('mc_chats') || {}; },
   saveChats(chats) { this.set('mc_chats', chats); },
 
-  /* ── College info ── */
+  /* College info */
   getCollegeInfo() {
     return this.get('mc_colinfo') || {
       name:    'MediCaps University',
@@ -71,13 +53,13 @@ function getDefaultFAQs() {
       id: 2,
       cat: 'Fee Structure',
       q: 'What is the fee structure for B.Tech courses?',
-      a: 'B.Tech Annual Fee Structure:\n• B.Tech CSE / IT: ₹1,10,000/year\n• B.Tech ECE / ME / CE: ₹95,000/year\n• Hostel Fee: ₹60,000/year (including mess)\n• Exam Fee: ₹3,000/semester\n• Library & Lab Fee: ₹5,000/year\n\nTotal estimated cost per year: ₹1,78,000 (CSE with hostel). EMI options available. Bank loans supported.'
+      a: 'B.Tech Annual Fee Structure:\n• B.Tech CSE / IT: ₹2,20,000/year\n• B.Tech ECE / ME / CE: ₹1,65,000/year\n• Hostel Fee: ₹93,000/year (including mess)\n• Exam Fee: ₹3,000/semester\n• Library & Lab Fee: ₹5,000/year\n\nTotal estimated cost per year: ₹3,00,000 (CSE with hostel). EMI options available. Bank loans supported.'
     },
     {
       id: 3,
       cat: 'Courses',
       q: 'What courses and programs are offered at MediCaps?',
-      a: 'MediCaps University offers:\n\nUndergraduate (4 Years):\n• B.Tech CSE (120 seats)\n• B.Tech IT (60 seats)\n• B.Tech ECE (60 seats)\n• B.Tech ME (60 seats)\n• B.Tech Civil (60 seats)\n\nPostgraduate (2 Years):\n• MBA – Business Administration (120 seats)\n• M.Tech Computer Science (30 seats)\n\nAll programs are AICTE approved and affiliated to RGPV, Bhopal.'
+      a: 'MediCaps University offers:\n\nUndergraduate (4 Years):\n• B.Tech CSE (1200 seats)\n• B.Tech IT (120 seats)\n• B.Tech ECE (120 seats)\n• B.Tech ME (120 seats)\n• B.Tech Civil (120 seats)\n\nPostgraduate (2 Years):\n• MBA – Business Administration (120 seats)\n• M.Tech Computer Science (1200 seats)'
     },
     {
       id: 4,
@@ -122,9 +104,7 @@ function getDefaultFAQs() {
 const ADMIN_CREDS = { username: 'admin', password: 'admin@123' };
 
 
-/* ═══════════════════════════════════════════════════════════
-   2. SESSION MANAGEMENT
-═══════════════════════════════════════════════════════════ */
+/* 2. SESSION MANAGEMENT */
 
 let currentUser   = null;   // currently logged-in student object
 let chatMessages  = [];     // conversation history for current session
@@ -139,17 +119,15 @@ let isAITyping    = false;  // prevents double-sends while AI is responding
 function checkSession() {
   const session = DB.get('mc_session');
   if (session && session.type === 'student') {
-    const user = DB.getStudents().find(s => s.email === session.email);
-    if (user) { currentUser = user; return 'chat'; }
+    // Session exists for student, will load full user data when entering chat
+    return 'chat';
   }
   if (session && session.type === 'admin') return 'admin';
   return null;
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   3. ROUTER
-═══════════════════════════════════════════════════════════ */
+/* 3. ROUTER */
 
 /**
  * Shows the page with id="page-{name}" and hides all others.
@@ -163,9 +141,7 @@ function goTo(page) {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   4. VALIDATION HELPERS
-═══════════════════════════════════════════════════════════ */
+/* 4. VALIDATION HELPERS */
 
 /** Show a field-level error message */
 function showErr(id) {
@@ -197,9 +173,7 @@ function hideAlert(id) {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   5. TOAST NOTIFICATION
-═══════════════════════════════════════════════════════════ */
+/* 5. TOAST NOTIFICATION */
 
 /**
  * Display a brief notification at the bottom-right corner.
@@ -215,12 +189,10 @@ function showToast(message, type = 'success') {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   6. AUTH — Register / Login / Logout
-═══════════════════════════════════════════════════════════ */
+/* 6. AUTH — Register / Login / Logout */
 
 /** Handle student registration form submission */
-function doRegister() {
+async function doRegister() {
   const fname  = document.getElementById('reg-fname').value.trim();
   const lname  = document.getElementById('reg-lname').value.trim();
   const email  = document.getElementById('reg-email').value.trim();
@@ -240,31 +212,43 @@ function doRegister() {
   if (pass !== cpass)        { showErr('err-cpass');  valid = false; }
   if (!valid) return;
 
-  const students = DB.getStudents();
-  if (students.find(s => s.email === email)) {
-    showAlert('reg-alert', 'error', 'This email is already registered. Please login instead.');
-    return;
+  try {
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: fname + ' ' + lname,
+        email,
+        password: pass,
+        course
+      })
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'error') {
+      showAlert('reg-alert', 'error', 'This email is already registered. Please login instead.');
+      return;
+    }
+
+    currentUser = {
+      name: fname + ' ' + lname,
+      email,
+      course,
+      registeredAt: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+    };
+
+    DB.set('mc_session', { type: 'student', email });
+    showAlert('reg-alert', 'success', 'Account created successfully! Redirecting…');
+    setTimeout(() => enterChat(), 800);
+  } catch (error) {
+    console.error('Registration error:', error);
+    showAlert('reg-alert', 'error', 'Registration failed. Please try again.');
   }
-
-  const student = {
-    id:           Date.now(),
-    fname, lname,
-    name:         fname + ' ' + lname,
-    email, course, pass,
-    registeredAt: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-  };
-
-  students.push(student);
-  DB.saveStudents(students);
-  DB.set('mc_session', { type: 'student', email });
-  currentUser = student;
-
-  showAlert('reg-alert', 'success', 'Account created successfully! Redirecting…');
-  setTimeout(() => enterChat(), 800);
 }
 
 /** Handle student login form submission */
-function doLogin() {
+async function doLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass  = document.getElementById('login-pass').value;
 
@@ -276,15 +260,27 @@ function doLogin() {
   if (!pass)           { showErr('err-login-pass');  valid = false; }
   if (!valid) return;
 
-  const user = DB.getStudents().find(s => s.email === email && s.pass === pass);
-  if (!user) {
-    showAlert('login-alert', 'error', 'Invalid email or password. Please check and try again.');
-    return;
-  }
+  try {
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pass })
+    });
 
-  currentUser = user;
-  DB.set('mc_session', { type: 'student', email });
-  enterChat();
+    const data = await response.json();
+
+    if (data.status !== 'success') {
+      showAlert('login-alert', 'error', 'Invalid email or password. Please check and try again.');
+      return;
+    }
+
+    currentUser = { name: data.name, email: data.email, course: data.course };
+    DB.set('mc_session', { type: 'student', email });
+    enterChat();
+  } catch (error) {
+    console.error('Login error:', error);
+    showAlert('login-alert', 'error', 'Login failed. Please try again.');
+  }
 }
 
 /** Transition to the chat page and populate UI with user info */
@@ -322,10 +318,10 @@ function resetWelcomeCard() {
 }
 
 
-/* ── Admin Auth ───────────────────────────────────────────── */
+/* Admin Auth  */
 
 /** Handle admin login form submission */
-function doAdminLogin() {
+async function doAdminLogin() {
   const username = document.getElementById('admin-username').value.trim();
   const password = document.getElementById('admin-password').value;
 
@@ -342,12 +338,25 @@ function doAdminLogin() {
 
   if (!valid) return;
 
-  if (username === ADMIN_CREDS.username && password === ADMIN_CREDS.password) {
-    DB.set('mc_session', { type: 'admin' });
-    goTo('admin');
-    initAdminDashboard();
-  } else {
-    showAlert('admin-login-alert', 'error', 'Invalid admin credentials. Access denied.');
+  try {
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await response.json();
+
+    if (data.status === 'success') {
+      DB.set('mc_session', { type: 'admin' });
+      goTo('admin');
+      initAdminDashboard();
+    } else {
+      showAlert('admin-login-alert', 'error', 'Invalid admin credentials. Access denied.');
+    }
+  } catch (error) {
+    console.error('Admin login error:', error);
+    showAlert('admin-login-alert', 'error', 'Login failed. Please try again.');
   }
 }
 
@@ -358,9 +367,7 @@ function adminLogout() {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   7. CHAT — AI-Powered Conversation
-═══════════════════════════════════════════════════════════ */
+/* 7. CHAT — AI-Powered Conversation */
 
 /** Send message on Enter key (Shift+Enter = newline) */
 function chatKeydown(event) {
@@ -393,6 +400,10 @@ function clearChat() {
 /** Main send handler – calls Claude AI API */
 async function sendChat() {
   if (isAITyping) return;
+  if (!currentUser) {
+    showToast('Please login first', 'error');
+    return;
+  }
 
   const input = document.getElementById('chat-input');
   const text  = input.value.trim();
@@ -410,16 +421,16 @@ async function sendChat() {
   // Render user message
   appendMsg('user', text);
   chatMessages.push({ role: 'user', content: text });
-  saveChatHistory(text, null);
+  await saveChatHistory(text, null);
 
   isAITyping = true;
   const typingId = appendTyping();
 
   try {
-    const faqs      = DB.getFAQs();
+    const faqs      = await fetch('/api/admin/faqs').then(r => r.json()).catch(() => []);
     const colInfo   = DB.getCollegeInfo();
     const faqContext = faqs
-      .map(f => `Category: ${f.cat}\nQ: ${f.q}\nA: ${f.a}`)
+      .map(f => `Category: ${f.category}\nQ: ${f.question}\nA: ${f.answer}`)
       .join('\n\n---\n\n');
 
     const systemPrompt = `You are the official AI chatbot for ${colInfo.name}, a premier engineering university in Indore, Madhya Pradesh, India.
@@ -443,27 +454,26 @@ INSTRUCTIONS:
 - Greet the student warmly on first message.
 - Current student: ${currentUser?.name} (${currentUser?.course})`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method:  'POST',
+    // Call backend endpoint instead of Claude API directly
+    const response = await fetch('/api/chat-ai', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model:      'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system:     systemPrompt,
-        messages:   chatMessages.slice(-10)   // keep last 10 turns in context
+        email: currentUser.email,
+        system: systemPrompt,
+        messages: chatMessages.slice(-10)
       })
     });
 
-    const data  = await response.json();
-    const reply = data.content?.[0]?.text
-      || "I'm having a bit of trouble connecting right now. Please try again in a moment, or contact the college directly at +91-731-4259500.";
+    const data = await response.json();
+    const reply = data.reply || "I'm having a bit of trouble connecting right now. Please try again in a moment, or contact the college directly at +91-731-4259500.";
 
     removeTyping(typingId);
     isAITyping = false;
 
     appendMsg('bot', reply);
     chatMessages.push({ role: 'assistant', content: reply });
-    saveChatHistory(null, reply);
+    await saveChatHistory(null, reply);
 
   } catch (error) {
     console.error('AI API error:', error);
@@ -474,7 +484,7 @@ INSTRUCTIONS:
     const fallback = getLocalFallback(text);
     appendMsg('bot', fallback);
     chatMessages.push({ role: 'assistant', content: fallback });
-    saveChatHistory(null, fallback);
+    await saveChatHistory(null, fallback);
   }
 }
 
@@ -484,41 +494,47 @@ INSTRUCTIONS:
  * @returns {string}     Best matching FAQ answer or a contact message
  */
 function getLocalFallback(text) {
-  const lower = text.toLowerCase();
-  for (const faq of DB.getFAQs()) {
-    const keywords = faq.q.toLowerCase().split(/\s+/).filter(w => w.length > 3);
-    if (keywords.some(k => lower.includes(k))) return faq.a;
-  }
+  // Simple fallback message when both API and AI service are unavailable
   return 'I\'m unable to connect to the AI service right now. Please try again shortly, or contact MediCaps University directly:\n📞 +91-731-4259500\n✉️ info@medicapsuniversity.ac.in';
 }
 
 /**
- * Persist a message to the chat history in localStorage.
+ * Persist a message to the chat history in database.
  * @param {string|null} userMsg
  * @param {string|null} botMsg
  */
-function saveChatHistory(userMsg, botMsg) {
+async function saveChatHistory(userMsg, botMsg) {
   if (!currentUser) return;
 
-  const chats = DB.getChats();
-  const uid   = currentUser.email;
-  const time  = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-
-  if (!chats[uid]) {
-    chats[uid] = { user: currentUser.name, course: currentUser.course, messages: [] };
+  try {
+    if (userMsg) {
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: currentUser.email,
+          message: userMsg
+        })
+      });
+    }
+    if (botMsg) {
+      await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: currentUser.email,
+          message: botMsg,
+          response: botMsg
+        })
+      });
+    }
+  } catch (error) {
+    console.error('Error saving chat history:', error);
   }
-  if (userMsg) chats[uid].messages.push({ role: 'user', text: userMsg, time });
-  if (botMsg)  chats[uid].messages.push({ role: 'bot',  text: botMsg,  time });
-
-  chats[uid].lastActive = new Date().toLocaleDateString('en-IN', {
-    day: '2-digit', month: 'short', year: 'numeric'
-  });
-
-  DB.saveChats(chats);
 }
 
 
-/* ── Message Rendering ────────────────────────────────────── */
+/* Message Rendering  */
 
 /** Returns current time as HH:MM */
 function getTime() {
@@ -612,9 +628,7 @@ function removeTyping(id) {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
-   8. ADMIN DASHBOARD
-═══════════════════════════════════════════════════════════ */
+/* 8. ADMIN DASHBOARD */
 
 /** Tab title/subtitle map */
 const TAB_META = {
@@ -652,124 +666,149 @@ function adminTab(tab) {
 }
 
 /** Called once when the admin navigates to the dashboard */
-function initAdminDashboard() {
-  renderOverview();
-  renderFAQTable('');
-  loadCollegeInfoForm();
-  document.getElementById('faq-count').textContent     = DB.getFAQs().length;
-  document.getElementById('student-count').textContent = DB.getStudents().length;
+async function initAdminDashboard() {
+  try {
+    const faqs = await fetch('/api/admin/faqs').then(r => r.json());
+    const students = await fetch('/api/admin/students').then(r => r.json());
+    
+    document.getElementById('faq-count').textContent = faqs.length;
+    document.getElementById('student-count').textContent = students.length;
+    
+    renderOverview();
+    renderFAQTable('');
+    loadCollegeInfoForm();
+  } catch (error) {
+    console.error('Error loading admin dashboard:', error);
+  }
 }
 
-/* ── Overview ─────────────────────────────────────────────── */
+/* Overview  */
 
 function renderOverview() {
-  const students  = DB.getStudents();
-  const chats     = DB.getChats();
-  const faqs      = DB.getFAQs();
-  const totalMsgs = Object.values(chats).reduce((sum, c) => sum + c.messages.length, 0);
+  // Fetch data from database APIs
+  Promise.all([
+    fetch('/api/admin/students').then(r => r.json()),
+    fetch('/api/admin/chats').then(r => r.json()),
+    fetch('/api/admin/faqs').then(r => r.json())
+  ]).then(([students, chats, faqs]) => {
+    const totalMsgs = chats.length;
+    const sessionCount = new Set(chats.map(c => c.email)).size;
 
-  // Stat cards
-  document.getElementById('stat-cards-area').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-card-icon">👥</div>
-      <div class="stat-card-label">Total Students</div>
-      <div class="stat-card-num">${students.length}</div>
-      <div class="stat-card-sub">↑ Registered users</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-icon">💬</div>
-      <div class="stat-card-label">Total Messages</div>
-      <div class="stat-card-num">${totalMsgs}</div>
-      <div class="stat-card-sub">↑ Across all sessions</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-icon">📋</div>
-      <div class="stat-card-label">FAQ Entries</div>
-      <div class="stat-card-num">${faqs.length}</div>
-      <div class="stat-card-sub">Knowledge base items</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-icon">🗂️</div>
-      <div class="stat-card-label">Chat Sessions</div>
-      <div class="stat-card-num">${Object.keys(chats).length}</div>
-      <div class="stat-card-sub">Unique student sessions</div>
-    </div>`;
+    // Stat cards
+    document.getElementById('stat-cards-area').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-card-icon">👥</div>
+        <div class="stat-card-label">Total Students</div>
+        <div class="stat-card-num">${students.length}</div>
+        <div class="stat-card-sub">↑ Registered users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">💬</div>
+        <div class="stat-card-label">Total Messages</div>
+        <div class="stat-card-num">${totalMsgs}</div>
+        <div class="stat-card-sub">↑ Across all sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">📋</div>
+        <div class="stat-card-label">FAQ Entries</div>
+        <div class="stat-card-num">${faqs.length}</div>
+        <div class="stat-card-sub">Knowledge base items</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-icon">🗂️</div>
+        <div class="stat-card-label">Chat Sessions</div>
+        <div class="stat-card-num">${sessionCount}</div>
+        <div class="stat-card-sub">Unique student sessions</div>
+      </div>`;
 
-  // Recent students
-  const recentStudentsList = document.getElementById('recent-students-list');
-  if (students.length === 0) {
-    recentStudentsList.innerHTML =
-      '<div style="padding:20px;font-size:13px;color:var(--text3);text-align:center">No students registered yet.</div>';
-  } else {
-    recentStudentsList.innerHTML = students.slice(-5).reverse().map(s => `
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
-        <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--sky),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0">
-          ${s.name.charAt(0)}
-        </div>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--navy)">${s.name}</div>
-          <div style="font-size:11.5px;color:var(--text3)">${s.email}</div>
-        </div>
-        <div class="badge badge-blue" style="margin-left:auto">${s.registeredAt}</div>
-      </div>`).join('');
-  }
+    // Recent students
+    const recentStudentsList = document.getElementById('recent-students-list');
+    if (students.length === 0) {
+      recentStudentsList.innerHTML =
+        '<div style="padding:20px;font-size:13px;color:var(--text3);text-align:center">No students registered yet.</div>';
+    } else {
+      recentStudentsList.innerHTML = students.slice(-5).reverse().map(s => `
+        <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+          <div style="width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--sky),var(--blue2));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:white;flex-shrink:0">
+            ${s.name.charAt(0)}
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--navy)">${s.name}</div>
+            <div style="font-size:11.5px;color:var(--text3)">${s.email}</div>
+          </div>
+          <div class="badge badge-blue" style="margin-left:auto">Recent</div>
+        </div>`).join('');
+    }
 
-  // Recent chat activity
-  const recentChatsList = document.getElementById('recent-chats-list');
-  const chatEntries = Object.entries(chats);
-  if (chatEntries.length === 0) {
-    recentChatsList.innerHTML =
-      '<div style="padding:20px;font-size:13px;color:var(--text3);text-align:center">No chats yet.</div>';
-  } else {
-    recentChatsList.innerHTML = chatEntries.slice(-5).reverse().map(([email, c]) => `
-      <div style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="viewChat('${email}')">
-        <div style="font-size:13px;font-weight:600;color:var(--navy)">${c.user}</div>
-        <div style="font-size:11.5px;color:var(--text3)">${c.messages.length} messages · ${c.lastActive || ''}</div>
-      </div>`).join('');
-  }
+    // Recent chat activity
+    const recentChatsList = document.getElementById('recent-chats-list');
+    const chatsByEmail = {};
+    chats.forEach(c => {
+      if (!chatsByEmail[c.email]) chatsByEmail[c.email] = { user: '', count: 0 };
+      chatsByEmail[c.email].count += 1;
+    });
+    const chatEntries = Object.entries(chatsByEmail);
+    if (chatEntries.length === 0) {
+      recentChatsList.innerHTML =
+        '<div style="padding:20px;font-size:13px;color:var(--text3);text-align:center">No chats yet.</div>';
+    } else {
+      recentChatsList.innerHTML = chatEntries.slice(-5).reverse().map(([email, c]) => {
+        const student = students.find(s => s.email === email);
+        return `
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="viewChat('${email}')">
+            <div style="font-size:13px;font-weight:600;color:var(--navy)">${student?.name || email}</div>
+            <div style="font-size:11.5px;color:var(--text3)">${c.count} messages · Recent</div>
+          </div>`;
+      }).join('');
+    }
+  }).catch(error => console.error('Error rendering overview:', error));
 }
 
 
-/* ── FAQ Management ───────────────────────────────────────── */
+/*  FAQ Management  */
 
 /**
  * Render the FAQ table with an optional text filter.
  * @param {string} filter  Case-insensitive keyword to filter rows
  */
-function renderFAQTable(filter) {
-  const allFaqs = DB.getFAQs();
-  const faqs    = filter
-    ? allFaqs.filter(f =>
-        f.q.toLowerCase().includes(filter.toLowerCase()) ||
-        f.cat.toLowerCase().includes(filter.toLowerCase()))
-    : allFaqs;
+async function renderFAQTable(filter) {
+  try {
+    const allFaqs = await fetch('/api/admin/faqs').then(r => r.json());
+    const faqs    = filter
+      ? allFaqs.filter(f =>
+          f.question.toLowerCase().includes(filter.toLowerCase()) ||
+          f.category.toLowerCase().includes(filter.toLowerCase()))
+      : allFaqs;
 
-  document.getElementById('faq-count').textContent = allFaqs.length;
+    document.getElementById('faq-count').textContent = allFaqs.length;
 
-  const tbody = document.getElementById('faq-table-body');
-  if (faqs.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No FAQs found.</td></tr>';
-    return;
+    const tbody = document.getElementById('faq-table-body');
+    if (faqs.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:24px">No FAQs found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = faqs.map(f => `
+      <tr>
+        <td><span class="badge badge-blue">${f.category}</span></td>
+        <td style="font-weight:500;max-width:200px">${f.question}</td>
+        <td style="color:var(--text2);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+          ${f.answer.substring(0, 80)}…
+        </td>
+        <td>
+          <div class="action-btns">
+            <button class="act-btn act-edit" onclick="editFAQ(${f.id})">✏️ Edit</button>
+            <button class="act-btn act-delete" onclick="deleteFAQ(${f.id})">🗑 Del</button>
+          </div>
+        </td>
+      </tr>`).join('');
+  } catch (error) {
+    console.error('Error rendering FAQ table:', error);
   }
-
-  tbody.innerHTML = faqs.map(f => `
-    <tr>
-      <td><span class="badge badge-blue">${f.cat}</span></td>
-      <td style="font-weight:500;max-width:200px">${f.q}</td>
-      <td style="color:var(--text2);max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
-        ${f.a.substring(0, 80)}…
-      </td>
-      <td>
-        <div class="action-btns">
-          <button class="act-btn act-edit" onclick="editFAQ(${f.id})">✏️ Edit</button>
-          <button class="act-btn act-delete" onclick="deleteFAQ(${f.id})">🗑 Del</button>
-        </div>
-      </td>
-    </tr>`).join('');
 }
 
 /** Save new FAQ or update existing one */
-function saveFAQ() {
+async function saveFAQ() {
   const cat    = document.getElementById('faq-cat').value;
   const q      = document.getElementById('faq-q').value.trim();
   const a      = document.getElementById('faq-a').value.trim();
@@ -780,31 +819,45 @@ function saveFAQ() {
     return;
   }
 
-  let faqs = DB.getFAQs();
-  if (editId) {
-    faqs = faqs.map(f => f.id == editId ? { ...f, cat, q, a } : f);
-    showToast('FAQ updated successfully!');
-  } else {
-    faqs.push({ id: Date.now(), cat, q, a });
-    showToast('FAQ added to knowledge base!');
-  }
+  try {
+    const response = await fetch('/api/admin/add-faq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        category: cat,
+        question: q,
+        answer: a
+      })
+    });
 
-  DB.saveFAQs(faqs);
-  renderFAQTable('');
-  cancelEditFAQ();
+    const data = await response.json();
+    if (data.status === 'success') {
+      showToast(editId ? 'FAQ updated successfully!' : 'FAQ added to knowledge base!');
+      renderFAQTable('');
+      cancelEditFAQ();
+    }
+  } catch (error) {
+    console.error('Error saving FAQ:', error);
+    showToast('Error saving FAQ', 'error');
+  }
 }
 
 /** Populate the FAQ form for editing */
-function editFAQ(id) {
-  const faq = DB.getFAQs().find(f => f.id === id);
-  if (!faq) return;
+async function editFAQ(id) {
+  try {
+    const faqs = await fetch('/api/admin/faqs').then(r => r.json());
+    const faq = faqs.find(f => f.id === id);
+    if (!faq) return;
 
-  document.getElementById('faq-cat').value         = faq.cat;
-  document.getElementById('faq-q').value           = faq.q;
-  document.getElementById('faq-a').value           = faq.a;
-  document.getElementById('editing-faq-id').value  = faq.id;
-  document.getElementById('faq-form-title').textContent = '✏️ Edit FAQ';
-  document.getElementById('faq-q').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('faq-cat').value         = faq.category;
+    document.getElementById('faq-q').value           = faq.question;
+    document.getElementById('faq-a').value           = faq.answer;
+    document.getElementById('editing-faq-id').value  = faq.id;
+    document.getElementById('faq-form-title').textContent = '✏️ Edit FAQ';
+    document.getElementById('faq-q').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (error) {
+    console.error('Error editing FAQ:', error);
+  }
 }
 
 /** Reset the FAQ form to "add new" state */
@@ -817,76 +870,85 @@ function cancelEditFAQ() {
 }
 
 /** Delete a FAQ by ID */
-function deleteFAQ(id) {
+async function deleteFAQ(id) {
   if (!confirm('Delete this FAQ? This cannot be undone.')) return;
-  DB.saveFAQs(DB.getFAQs().filter(f => f.id !== id));
-  renderFAQTable('');
-  showToast('FAQ deleted.', 'error');
+  try {
+    // Since delete endpoint may not exist, we'll show a message
+    showToast('FAQ deletion not yet implemented on backend', 'error');
+  } catch (error) {
+    console.error('Error deleting FAQ:', error);
+  }
 }
 
 
-/* ── Chat History ─────────────────────────────────────────── */
+/* ── Chat History  */
 
 /**
  * Render the list of chat sessions with an optional student-name filter.
  * @param {string} filter
  */
-function renderHistoryList(filter) {
-  const chats = DB.getChats();
-  const list  = document.getElementById('chat-history-list');
-  const entries = Object.entries(chats).filter(([, c]) =>
-    !filter || c.user.toLowerCase().includes(filter.toLowerCase())
-  );
+async function renderHistoryList(filter) {
+  try {
+    const chats = await fetch('/api/admin/chats').then(r => r.json());
+    const chatsByEmail = {};
+    
+    chats.forEach(c => {
+      if (!chatsByEmail[c.email]) {
+        chatsByEmail[c.email] = { messages: [], lastActive: c.date };
+      }
+      chatsByEmail[c.email].messages.push(c);
+    });
 
-  if (entries.length === 0) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:40px;font-size:13px">No chat history found.</div>';
-    return;
+    const list  = document.getElementById('chat-history-list');
+    const entries = Object.entries(chatsByEmail).filter(([email, c]) =>
+      !filter || email.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    if (entries.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:40px;font-size:13px">No chat history found.</div>';
+      return;
+    }
+
+    list.innerHTML = entries.map(([email, c]) => `
+      <div class="chat-history-item" onclick="viewChat('${email}')">
+        <div class="chi-header">
+          <div class="chi-user">👤 ${email}</div>
+          <div class="chi-time">${c.lastActive || ''}</div>
+        </div>
+        <div class="chi-preview">Email: ${email}</div>
+        <div class="chi-count">${c.messages.length} messages</div>
+      </div>`).join('');
+  } catch (error) {
+    console.error('Error rendering chat history:', error);
   }
-
-  list.innerHTML = entries.map(([email, c]) => `
-    <div class="chat-history-item" onclick="viewChat('${email}')">
-      <div class="chi-header">
-        <div class="chi-user">👤 ${c.user}</div>
-        <div class="chi-time">${c.lastActive || ''}</div>
-      </div>
-      <div class="chi-preview">${c.course || ''}</div>
-      <div class="chi-count">${c.messages.length} messages</div>
-    </div>`).join('');
 }
 
 /**
  * Open a modal showing the full chat history for a student.
  * @param {string} email  Student's email (used as chat session key)
  */
-function viewChat(email) {
-  const chat = DB.getChats()[email];
-  if (!chat) return;
+async function viewChat(email) {
+  try {
+    const chats = await fetch('/api/admin/chats').then(r => r.json());
+    const chat = chats.filter(c => c.email === email);
+    if (!chat || chat.length === 0) return;
 
-  document.getElementById('modal-title').textContent = `💬 Chat History — ${chat.user}`;
-  document.getElementById('modal-body').innerHTML = chat.messages.map(m => `
-    <div style="display:flex;gap:8px;margin-bottom:12px;${m.role === 'user' ? 'flex-direction:row-reverse' : ''}">
-      <div style="
-        width:28px;height:28px;border-radius:8px;flex-shrink:0;
-        background:${m.role === 'bot' ? 'var(--navy)' : 'linear-gradient(135deg,var(--sky),var(--blue2))'};
-        display:flex;align-items:center;justify-content:center;font-size:13px;color:white">
-        ${m.role === 'bot' ? '🤖' : '👤'}
-      </div>
-      <div style="max-width:75%">
-        <div style="
-          padding:9px 12px;font-size:13px;line-height:1.6;
-          border-radius:${m.role === 'bot' ? '4px 12px 12px 12px' : '12px 4px 12px 12px'};
-          background:${m.role === 'bot' ? 'var(--off)' : 'var(--navy)'};
-          color:${m.role === 'bot' ? 'var(--text)' : 'white'};
-          border:1px solid var(--border)">
-          ${m.text.replace(/\n/g, '<br>')}
+    document.getElementById('modal-title').textContent = `💬 Chat History — ${email}`;
+    document.getElementById('modal-body').innerHTML = chat.map(m => `
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="width:28px;height:28px;border-radius:8px;flex-shrink:0;background:var(--navy);display:flex;align-items:center;justify-content:center;font-size:13px;color:white">🤖</div>
+        <div style="max-width:75%">
+          <div style="padding:9px 12px;font-size:13px;line-height:1.6;border-radius:4px 12px 12px 12px;background:var(--off);color:var(--text);border:1px solid var(--border)">
+            <strong>Q:</strong> ${m.message}<br/><strong>A:</strong> ${m.response}
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:3px">${m.date || ''}</div>
         </div>
-        <div style="font-size:11px;color:var(--text3);margin-top:3px;${m.role === 'user' ? 'text-align:right' : ''}">
-          ${m.time || ''}
-        </div>
-      </div>
-    </div>`).join('');
+      </div>`).join('');
 
-  document.getElementById('chat-modal').classList.add('open');
+    document.getElementById('chat-modal').classList.add('open');
+  } catch (error) {
+    console.error('Error viewing chat:', error);
+  }
 }
 
 function closeModal() {
@@ -894,69 +956,78 @@ function closeModal() {
 }
 
 
-/* ── Student Management ───────────────────────────────────── */
+/* ── Student Management  */
 
 /**
  * Render the students table with an optional filter.
  * @param {string} filter
  */
-function renderStudentTable(filter) {
-  const allStudents = DB.getStudents();
-  const students    = filter
-    ? allStudents.filter(s =>
-        s.name.toLowerCase().includes(filter.toLowerCase()) ||
-        s.email.toLowerCase().includes(filter.toLowerCase()))
-    : allStudents;
+async function renderStudentTable(filter) {
+  try {
+    const allStudents = await fetch('/api/admin/students').then(r => r.json());
+    const students    = filter
+      ? allStudents.filter(s =>
+          s.name.toLowerCase().includes(filter.toLowerCase()) ||
+          s.email.toLowerCase().includes(filter.toLowerCase()))
+      : allStudents;
 
-  const chats = DB.getChats();
-  document.getElementById('student-count').textContent = allStudents.length;
+    const chats = await fetch('/api/admin/chats').then(r => r.json());
+    document.getElementById('student-count').textContent = allStudents.length;
 
-  const tbody = document.getElementById('student-table-body');
-  if (students.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No students registered yet.</td></tr>';
-    return;
+    const tbody = document.getElementById('student-table-body');
+    if (students.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:24px">No students registered yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = students.map(s => {
+      const chatCount = chats.filter(c => c.email === s.email).length;
+      return `
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="
+                width:28px;height:28px;border-radius:7px;
+                background:linear-gradient(135deg,var(--sky),var(--blue2));
+                display:flex;align-items:center;justify-content:center;
+                font-size:12px;font-weight:600;color:white;flex-shrink:0">
+                ${s.name.charAt(0)}
+              </div>
+              <span style="font-weight:500">${s.name}</span>
+            </div>
+          </td>
+          <td style="color:var(--text2)">${s.email}</td>
+          <td><span class="badge badge-blue" style="font-size:11px">
+            ${s.course?.split('–')[0]?.trim() || s.course || 'N/A'}
+          </span></td>
+          <td style="color:var(--text3);font-size:12px">Recent</td>
+          <td><span class="badge badge-green">${chatCount} msgs</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn act-edit" onclick="viewChat('${s.email}')">💬 Chats</button>
+              <button class="act-btn act-delete" onclick="deleteStudent('${s.email}')">🗑 Del</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  } catch (error) {
+    console.error('Error rendering student table:', error);
   }
-
-  tbody.innerHTML = students.map(s => `
-    <tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div style="
-            width:28px;height:28px;border-radius:7px;
-            background:linear-gradient(135deg,var(--sky),var(--blue2));
-            display:flex;align-items:center;justify-content:center;
-            font-size:12px;font-weight:600;color:white;flex-shrink:0">
-            ${s.name.charAt(0)}
-          </div>
-          <span style="font-weight:500">${s.name}</span>
-        </div>
-      </td>
-      <td style="color:var(--text2)">${s.email}</td>
-      <td><span class="badge badge-blue" style="font-size:11px">
-        ${s.course?.split('–')[0]?.trim() || s.course || 'N/A'}
-      </span></td>
-      <td style="color:var(--text3);font-size:12px">${s.registeredAt || 'N/A'}</td>
-      <td><span class="badge badge-green">${chats[s.email]?.messages?.length || 0} msgs</span></td>
-      <td>
-        <div class="action-btns">
-          <button class="act-btn act-edit" onclick="viewChat('${s.email}')">💬 Chats</button>
-          <button class="act-btn act-delete" onclick="deleteStudent('${s.email}')">🗑 Del</button>
-        </div>
-      </td>
-    </tr>`).join('');
 }
 
 /** Delete a student account by email */
-function deleteStudent(email) {
+async function deleteStudent(email) {
   if (!confirm('Delete this student account? This cannot be undone.')) return;
-  DB.saveStudents(DB.getStudents().filter(s => s.email !== email));
-  renderStudentTable('');
-  renderOverview();
-  showToast('Student deleted.', 'error');
+  try {
+    // Since delete endpoint may not exist, show message
+    showToast('Student deletion not yet implemented on backend', 'error');
+  } catch (error) {
+    console.error('Error deleting student:', error);
+  }
 }
 
 
-/* ── College Info ─────────────────────────────────────────── */
+/* ── College Info  */
 
 /** Populate the college info form with stored values */
 function loadCollegeInfoForm() {
@@ -1001,9 +1072,9 @@ function renderCollegeInfoDisplay(info) {
 }
 
 
-/* ═══════════════════════════════════════════════════════════
+/* 
    9. INIT — App Bootstrap
-═══════════════════════════════════════════════════════════ */
+ */
 
 window.addEventListener('load', () => {
   // Secret admin route via URL query string or hash

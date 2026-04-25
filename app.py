@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy, model
 from flask_cors import CORS
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+from groq import Groq
 
 app = Flask(__name__)
 CORS(app)
@@ -9,7 +12,7 @@ CORS(app)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 db = SQLAlchemy(app)
 
-# ---------------- DATABASE ---------------- #
+#  DATABASE  #
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,13 +45,13 @@ class Unanswered(db.Model):
     date = db.Column(db.String(50))
 
 
-# ---------------- ROUTES ---------------- #
+#  ROUTES  #
 
 @app.route("/")
 def home():
     return render_template("index.html")
 
-# ---------- STUDENT ---------- #
+#  STUDENT  #
 
 @app.route("/api/register", methods=["POST"])
 def register():
@@ -93,24 +96,54 @@ def login():
 @app.route("/api/chat", methods=["POST"])
 def chat():
     data = request.json
-    msg = data["message"]
-    email = data["email"]
+    msg = data.get("message", "")
+    email = data.get("email", "")
 
-    reply = bot_reply(msg)
+    # If response is provided, store it as-is (AI response)
+    response = data.get("response", None)
+    
+    # If no response, generate one using bot_reply
+    if not response:
+        response = bot_reply(msg)
 
     chat = Chat(
         user_email=email,
         message=msg,
-        response=reply,
+        response=response,
         date=str(datetime.now())
     )
 
     db.session.add(chat)
     db.session.commit()
 
-    return jsonify({"reply": reply})
+    return jsonify({"status": "success", "reply": response})
 
+@app.route("/api/chat-ai", methods=["POST"])
+def chat_ai():
+    data = request.json
+    messages = data.get("messages", [])
+    system_prompt = data.get("system", "You are a helpful assistant for MediCaps University.")
 
+    if not messages:
+        return jsonify({"status": "error", "reply": "No message"}), 400
+
+    try:
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": system_prompt},  # ← uses system prompt from frontend
+                *messages
+            ]
+        )
+
+        reply = response.choices[0].message.content
+        return jsonify({"status": "success", "reply": reply})
+
+    except Exception as e:
+        return jsonify({"status": "error", "reply": str(e)}), 500
+    
 # ---------- ADMIN ---------- #
 
 @app.route("/api/admin/login", methods=["POST"])
@@ -207,7 +240,7 @@ def answer_question():
 
     return jsonify({"status": "success"})
 
-# ---------- BOT ---------- #
+#  BOT  #
 
 def bot_reply(msg):
     msg = msg.lower()
@@ -217,7 +250,7 @@ def bot_reply(msg):
         if any(word in msg for word in faq.question.lower().split()):
             return faq.answer
 
-    # ❗ If no answer found → store question
+    #  If no answer found → store question
     new_q = Unanswered(
         question=msg,
         date=str(datetime.now())
@@ -228,7 +261,7 @@ def bot_reply(msg):
     return "Sorry, I don’t have this information yet. Admin will update it soon."
 
 
-# ---------- INIT ---------- #
+#  INIT  #
 
 if __name__ == "__main__":
     with app.app_context():
@@ -236,7 +269,7 @@ if __name__ == "__main__":
 
         # Create default admin
         if not Admin.query.first():
-            admin = Admin(username="admin", password="admin123")
+            admin = Admin(username="admin", password="admin@123")
             db.session.add(admin)
             db.session.commit()
 

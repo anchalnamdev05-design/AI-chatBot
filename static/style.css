@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════════════════
-   MediCaps University – Smart Enquiry Portal
+/* 
+   AcadBot – Smart Enquiry Portal
    style.css — All styles
-═══════════════════════════════════════════════════════════ */
+ */
 
-/* ── ROOT TOKENS ─────────────────────────────────────────── */
+/*  ROOT TOKENS  */
 :root {
   --navy:       #0a1628;
   --navy2:      #0f1f3d;
@@ -34,7 +34,7 @@
   --mono:       'DM Mono', monospace;
 }
 
-/* ── RESET & BASE ─────────────────────────────────────────── */
+/* ── RESET & BASE  */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -53,7 +53,7 @@ button { font-family: var(--font); cursor: pointer; }
 input, textarea, select { font-family: var(--font); }
 a { text-decoration: none; color: inherit; }
 
-/* ── PAGE ROUTER ─────────────────────────────────────────── */
+/* ── PAGE ROUTER  */
 .page { display: none !important; }
 .page.active {
   display: flex !important;
@@ -61,14 +61,12 @@ a { text-decoration: none; color: inherit; }
   min-height: 100vh;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SHARED: TOPBAR
-═══════════════════════════════════════════════════════════ */
+/* SHARED: TOPBAR */
 .topbar {
   background: var(--navy);
   color: var(--white);
   padding: 0 32px;
-  height: 64px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -80,10 +78,9 @@ a { text-decoration: none; color: inherit; }
 }
 .topbar-brand { display: flex; align-items: center; gap: 12px; }
 .brand-icon {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +89,7 @@ a { text-decoration: none; color: inherit; }
 }
 .brand-name {
   font-family: var(--font-head);
-  font-size: 17px;
+  font-size: 22px;
   letter-spacing: 0.01em;
 }
 .brand-tag {
@@ -144,14 +141,13 @@ a { text-decoration: none; color: inherit; }
 .btn-gold:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .btn-gold:active { transform: translateY(0); }
 
-/* ═══════════════════════════════════════════════════════════
-   LANDING PAGE
-═══════════════════════════════════════════════════════════ */
+/* LANDING PAGE */
 #page-landing { background: var(--white); }
 
 /* Hero */
 .hero {
-  background: var(--navy);
+  background: linear-gradient(135deg, #0a1628, #0f1f3d);
+  position: relative;
   color: var(--white);
   padding: 80px 32px 100px;
   position: relative;
@@ -165,17 +161,20 @@ a { text-decoration: none; color: inherit; }
     radial-gradient(ellipse 60% 80% at 70% 50%, rgba(26, 95, 180, 0.35) 0%, transparent 70%),
     radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200, 146, 42, 0.12) 0%, transparent 60%);
 }
-.hero-grid {
+.hero::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 50px 50px;
+  background: url("https://www.transparenttextures.com/patterns/asfalt-light.png");
+  opacity: 0.15;
+}
+.hero-grid {
+  display: none;
 }
 .hero-inner {
   max-width: 1100px;
   margin: 0 auto;
+  transform: translateX(6px);
   position: relative;
   z-index: 1;
   display: grid;
@@ -230,7 +229,7 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.01em;
 }
 .btn-hero-primary:hover {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 24px rgba(200, 146, 42, 0.4);
 }
 .btn-hero-sec {
@@ -251,7 +250,7 @@ a { text-decoration: none; color: inherit; }
 
 /* Hero chatbot preview card */
 .hero-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-lg);
   padding: 20px;
@@ -299,12 +298,12 @@ a { text-decoration: none; color: inherit; }
 }
 .pm.bot {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px 12px 12px 12px;
+  border-radius: 6px 14px 12px 10px;
   color: rgba(255, 255, 255, 0.9);
 }
 .pm.user {
   background: linear-gradient(135deg, var(--blue), var(--blue2));
-  border-radius: 12px 4px 12px 12px;
+  border-radius: 14px 6px 10px 12px;
   align-self: flex-end;
   color: var(--white);
 }
@@ -510,9 +509,7 @@ a { text-decoration: none; color: inherit; }
   border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-/* ═══════════════════════════════════════════════════════════
-   AUTH PAGES (Login / Register)
-═══════════════════════════════════════════════════════════ */
+/* AUTH PAGES (Login / Register)*/
 .auth-page {
   background: var(--off);
   min-height: 100vh;
@@ -621,9 +618,7 @@ a { text-decoration: none; color: inherit; }
 .alert-box.success { background: #edf7f2; border: 1px solid #a3d9bc; color: #1a6645; }
 .alert-box.error { background: #fdf0f0; border: 1px solid #f0b0b0; color: #8b2020; }
 
-/* ═══════════════════════════════════════════════════════════
-   STUDENT CHATBOT PAGE
-═══════════════════════════════════════════════════════════ */
+/* STUDENT CHATBOT PAGE */
 #page-chat {
   background: var(--off);
   height: 100vh;
@@ -987,9 +982,9 @@ a { text-decoration: none; color: inherit; }
 }
 .input-hint { font-size: 11px; color: var(--text3); font-family: var(--mono); }
 
-/* ═══════════════════════════════════════════════════════════
+/* 
    ADMIN PAGE
-═══════════════════════════════════════════════════════════ */
+ */
 #page-admin {
   background: var(--off);
   flex-direction: row !important;
@@ -1300,9 +1295,9 @@ tbody tr:hover td { background: rgba(26, 95, 180, 0.02); }
 .toast.error { border-left-color: var(--danger); }
 .toast.success { border-left-color: var(--success); }
 
-/* ═══════════════════════════════════════════════════════════
+/* 
    ANIMATIONS
-═══════════════════════════════════════════════════════════ */
+ */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
@@ -1328,9 +1323,9 @@ tbody tr:hover td { background: rgba(26, 95, 180, 0.02); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ═══════════════════════════════════════════════════════════
+/* 
    RESPONSIVE
-═══════════════════════════════════════════════════════════ */
+ */
 @media (max-width: 900px) {
   .hero-inner { grid-template-columns: 1fr; gap: 40px; }
   .hero-card { display: none; }
